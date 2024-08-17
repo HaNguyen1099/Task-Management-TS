@@ -15,9 +15,18 @@ app.get("/tasks", async (req: Request, res: Response) => {
         deleted: false
     })
 
-    console.log(tasks)
-
     res.json(tasks)
+})
+
+app.get("/tasks/detail/:id", async (req: Request, res: Response) => {
+    const id = req.params.id
+
+    const task = await Task.find({
+        _id: id,
+        deleted: false
+    })
+
+    res.json(task)
 })
 
 app.listen(port, () => {
