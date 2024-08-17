@@ -1,6 +1,8 @@
 import { Request, Response } from "express"
 import Task from "../models/task.model"
 
+import paginationHelper from "../../../helpers/pagination"
+
 export const index = async (req: Request, res: Response) => {
     interface find {
         deleted: boolean,
@@ -24,7 +26,23 @@ export const index = async (req: Request, res: Response) => {
         sort[sortKey] = req.query.sortValue
     }
 
-    const tasks = await Task.find(find).sort(sort)
+    // Pagination 
+    let initPagination = {
+        currentPage: 1,
+        limitItems: 2
+    }
+
+    const countTasks = await Task.countDocuments(find)
+    const objectPagination = paginationHelper(
+        initPagination,
+        req.query,
+        countTasks
+    )
+
+    const tasks = await Task.find(find)
+        .sort(sort)
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip)
 
     res.json(tasks)
 }
