@@ -123,3 +123,22 @@ export const changeMulti = async (req: Request, res: Response) => {
         })
     }
 }
+
+// [POST] /api/v1/tasks/create
+export const create = async (req: Request, res: Response) => {
+    try {
+        const product = new Task(req.body)
+        const data = await product.save()
+
+        res.json({
+            code: "200",
+            message: "Tạo thành công!",
+            data: data
+        })
+    } catch (error) {
+        res.json({
+            code: "400",
+            message: "Không tồn tại!"
+        })
+    }
+}
